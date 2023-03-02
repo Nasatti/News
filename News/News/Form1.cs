@@ -24,6 +24,7 @@ namespace News
 
         static HttpClient client = new HttpClient();
         Rootobject articolo = new Rootobject();
+        List<int>results = new List<int>();
         int i = 0;
 
         async Task<Rootobject> get()
@@ -47,14 +48,79 @@ namespace News
 
         private void previous_Click(object sender, EventArgs e)
         {
+            if (i == (articolo.articles.Length - 1))
+            {
+                previous.Enabled = false;
+            }
             i++;
             complete(i);
+            next.Enabled = true;
         }
         private void complete(int n)
         {
-                title.Text = articolo.articles[n].title;
-                description.Text = articolo.articles[n].description;
-                content.Text = articolo.articles[n].content;
+            title.Text = articolo.articles[n].title;
+            description.Text = articolo.articles[n].description;
+            content.Text = articolo.articles[n].content;
+            url.Text = articolo.articles[n].url;
+            author.Text = articolo.articles[n].author;
+            date.Value = articolo.articles[n].publishedAt;
+            WebRequest wb = WebRequest.Create(articolo.articles[n].urlToImage);
+            //https://www.youtube.com/watch?v=sLbbzEhF0mw&ab_channel=SatellaSoft
+            result_pan.Visible = false;
+        }
+
+        private void next_Click(object sender, EventArgs e)
+        {
+            i--;
+            complete(i);
+            if (i == 0)
+            {
+                next.Enabled = false;
+            }
+        }
+
+        private void date_ValueChanged(object sender, EventArgs e)
+        {
+            error.Visible = false;
+            result.Items.Clear();
+            results.Clear();
+            result_pan.Visible = true;
+            for(int n = 0; n < articolo.articles.Length; n++)
+            {
+                string data1 = articolo.articles[n].publishedAt.ToString().Substring(0, 10);
+                string data2 = date.Value.ToString().Substring(0, 10);
+                if (data1 == data2)
+                {
+                    result.Items.Add(articolo.articles[n].title);
+                    results.Add(n);
+                }
+            }
+            if(results.Count == 0)
+            {
+                error.Visible = true;
+            }
+        }
+
+        private void url_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(articolo.articles[i].url);
+        }
+
+        private void label2_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void close_Click(object sender, EventArgs e)
+        {
+            result_pan.Visible = false;
+        }
+
+        private void result_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            complete(results[result.SelectedIndex]);
+            result_pan.Visible = false;
+            error.Visible = false;
         }
     }
 }
