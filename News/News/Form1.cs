@@ -66,7 +66,14 @@ namespace News
             date.Value = articolo.articles[n].publishedAt;
             WebRequest wb = WebRequest.Create(articolo.articles[n].urlToImage);
             //https://www.youtube.com/watch?v=sLbbzEhF0mw&ab_channel=SatellaSoft
-            result_pan.Visible = false;
+            using (var response = wb.GetResponse())
+            {
+                using(var str = response.GetResponseStream())
+                {
+                    picture.Image = Bitmap.FromStream(str);
+                }
+            }
+                result_pan.Visible = false;
         }
 
         private void next_Click(object sender, EventArgs e)
@@ -81,24 +88,7 @@ namespace News
 
         private void date_ValueChanged(object sender, EventArgs e)
         {
-            error.Visible = false;
-            result.Items.Clear();
-            results.Clear();
-            result_pan.Visible = true;
-            for(int n = 0; n < articolo.articles.Length; n++)
-            {
-                string data1 = articolo.articles[n].publishedAt.ToString().Substring(0, 10);
-                string data2 = date.Value.ToString().Substring(0, 10);
-                if (data1 == data2)
-                {
-                    result.Items.Add(articolo.articles[n].title);
-                    results.Add(n);
-                }
-            }
-            if(results.Count == 0)
-            {
-                error.Visible = true;
-            }
+            
         }
 
         private void url_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
@@ -121,6 +111,33 @@ namespace News
             complete(results[result.SelectedIndex]);
             result_pan.Visible = false;
             error.Visible = false;
+        }
+
+        private void date_DropDown(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void date_CloseUp(object sender, EventArgs e)
+        {
+            error.Visible = false;
+            result.Items.Clear();
+            results.Clear();
+            result_pan.Visible = true;
+            for (int n = 0; n < articolo.articles.Length; n++)
+            {
+                string data1 = articolo.articles[n].publishedAt.ToString().Substring(0, 10);
+                string data2 = date.Value.ToString().Substring(0, 10);
+                if (data1 == data2)
+                {
+                    result.Items.Add(articolo.articles[n].title);
+                    results.Add(n);
+                }
+            }
+            if (results.Count == 0)
+            {
+                error.Visible = true;
+            }
         }
     }
 }

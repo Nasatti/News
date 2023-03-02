@@ -29,8 +29,10 @@
         private void InitializeComponent()
         {
             this.panel1 = new System.Windows.Forms.Panel();
+            this.label1 = new System.Windows.Forms.Label();
             this.date = new System.Windows.Forms.DateTimePicker();
             this.panel2 = new System.Windows.Forms.Panel();
+            this.picture = new System.Windows.Forms.PictureBox();
             this.author = new System.Windows.Forms.Label();
             this.url = new System.Windows.Forms.LinkLabel();
             this.content = new System.Windows.Forms.TextBox();
@@ -39,16 +41,14 @@
             this.previous = new System.Windows.Forms.Button();
             this.next = new System.Windows.Forms.Button();
             this.result_pan = new System.Windows.Forms.Panel();
+            this.error = new System.Windows.Forms.Label();
             this.close = new System.Windows.Forms.Button();
             this.result = new System.Windows.Forms.ComboBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.error = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.picture = new System.Windows.Forms.PictureBox();
             this.panel1.SuspendLayout();
             this.panel2.SuspendLayout();
-            this.result_pan.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picture)).BeginInit();
+            this.result_pan.SuspendLayout();
             this.SuspendLayout();
             // 
             // panel1
@@ -63,6 +63,18 @@
             this.panel1.Size = new System.Drawing.Size(614, 56);
             this.panel1.TabIndex = 2;
             // 
+            // label1
+            // 
+            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.label1.Font = new System.Drawing.Font("Algerian", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(0, 0);
+            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(612, 54);
+            this.label1.TabIndex = 1;
+            this.label1.Text = "THE WALL STREET JOURNAL";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            // 
             // date
             // 
             this.date.Anchor = System.Windows.Forms.AnchorStyles.Top;
@@ -71,7 +83,9 @@
             this.date.Name = "date";
             this.date.Size = new System.Drawing.Size(168, 20);
             this.date.TabIndex = 3;
+            this.date.CloseUp += new System.EventHandler(this.date_CloseUp);
             this.date.ValueChanged += new System.EventHandler(this.date_ValueChanged);
+            this.date.DropDown += new System.EventHandler(this.date_DropDown);
             // 
             // panel2
             // 
@@ -90,6 +104,15 @@
             this.panel2.Name = "panel2";
             this.panel2.Size = new System.Drawing.Size(582, 247);
             this.panel2.TabIndex = 4;
+            // 
+            // picture
+            // 
+            this.picture.Location = new System.Drawing.Point(425, 77);
+            this.picture.Name = "picture";
+            this.picture.Size = new System.Drawing.Size(154, 101);
+            this.picture.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.picture.TabIndex = 12;
+            this.picture.TabStop = false;
             // 
             // author
             // 
@@ -121,10 +144,10 @@
             this.content.BackColor = System.Drawing.SystemColors.Control;
             this.content.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.content.Font = new System.Drawing.Font("Arial", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.content.Location = new System.Drawing.Point(-2, 68);
+            this.content.Location = new System.Drawing.Point(-2, 91);
             this.content.Multiline = true;
             this.content.Name = "content";
-            this.content.Size = new System.Drawing.Size(405, 101);
+            this.content.Size = new System.Drawing.Size(405, 78);
             this.content.TabIndex = 8;
             // 
             // description
@@ -188,6 +211,18 @@
             this.result_pan.TabIndex = 12;
             this.result_pan.Visible = false;
             // 
+            // error
+            // 
+            this.error.AutoSize = true;
+            this.error.Font = new System.Drawing.Font("Baskerville Old Face", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.error.ForeColor = System.Drawing.Color.Red;
+            this.error.Location = new System.Drawing.Point(141, 137);
+            this.error.Name = "error";
+            this.error.Size = new System.Drawing.Size(157, 18);
+            this.error.TabIndex = 14;
+            this.error.Text = "No Results on this date!";
+            this.error.Visible = false;
+            // 
             // close
             // 
             this.close.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
@@ -219,38 +254,6 @@
             this.label2.TabIndex = 0;
             this.label2.Text = "Results";
             // 
-            // error
-            // 
-            this.error.AutoSize = true;
-            this.error.Font = new System.Drawing.Font("Baskerville Old Face", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.error.ForeColor = System.Drawing.Color.Red;
-            this.error.Location = new System.Drawing.Point(141, 137);
-            this.error.Name = "error";
-            this.error.Size = new System.Drawing.Size(157, 18);
-            this.error.TabIndex = 14;
-            this.error.Text = "No Results on this date!";
-            this.error.Visible = false;
-            // 
-            // label1
-            // 
-            this.label1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.label1.Font = new System.Drawing.Font("Algerian", 27.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(0, 0);
-            this.label1.Margin = new System.Windows.Forms.Padding(2, 0, 2, 0);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(612, 54);
-            this.label1.TabIndex = 1;
-            this.label1.Text = "THE WALL STREET JOURNAL";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            // 
-            // picture
-            // 
-            this.picture.Location = new System.Drawing.Point(425, 68);
-            this.picture.Name = "picture";
-            this.picture.Size = new System.Drawing.Size(154, 101);
-            this.picture.TabIndex = 12;
-            this.picture.TabStop = false;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -270,9 +273,9 @@
             this.panel1.ResumeLayout(false);
             this.panel2.ResumeLayout(false);
             this.panel2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picture)).EndInit();
             this.result_pan.ResumeLayout(false);
             this.result_pan.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.picture)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
