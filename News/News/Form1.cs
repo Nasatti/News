@@ -12,6 +12,7 @@ using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace News
 {
@@ -29,7 +30,10 @@ namespace News
 
         async Task<Rootobject> get()
         {
+            client = new HttpClient();
+            client.DefaultRequestHeaders.Add("User-Agent", "PostmanRuntime/7.31.3");
             string url = "https://newsapi.org/v2/everything?domains=wsj.com&apiKey=a6412302f797446fb5d0cee1c946e308";
+            
             HttpResponseMessage response = await client.GetAsync(url);
             if (response.IsSuccessStatusCode)
             {
@@ -60,6 +64,15 @@ namespace News
         }
         private void complete(int n)
         {
+            if (this.Controls.ContainsKey("panel_1") && this.Controls["panel_1"].GetType() == typeof(Panel))
+            {
+                foreach (int r in results)
+                {
+                    string panelName = "panel_" + r.ToString();
+                    Panel panel_delete = (Panel)this.Controls[panelName];
+                    panel_delete.Dispose();
+                }
+            }
             title.Text = articolo.articles[n].title;
             description.Text = articolo.articles[n].description;
             content.Text = articolo.articles[n].content;
@@ -76,17 +89,64 @@ namespace News
             }
                 result_pan.Visible = false;
         }
-        private void completeSearch(int n)
+        private void completeSearch(List<int> results)
         {
-            title_search.Text = articolo.articles[n].title;
-            txt_search.Text = articolo.articles[n].description;
-            WebRequest wb = WebRequest.Create(articolo.articles[n].urlToImage);
-            using (var response = wb.GetResponse())
+            int w = 550; int h = 170;
+            int y = 137;
+            foreach(int r in results)
             {
-                using (var str = response.GetResponseStream())
+                Panel panel = new Panel();
+                panel.Name = "panel_" + r.ToString();
+                panel.Size = new Size(w, h);
+                panel.Location = new Point(12, y);
+                panel.BorderStyle = BorderStyle.FixedSingle;
+                panel.Anchor = AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Top;
+                
+
+                System.Windows.Forms.Label title_search = new System.Windows.Forms.Label();
+                title_search.Text = articolo.articles[r].title;
+                title_search.AutoSize = true;
+                title_search.Font = new Font("Modern No. 20", this.title.Font.Size);
+                title_search.Location = new Point(5,5);
+                title_search.Click += (sender, e) =>
                 {
-                    img_search.Image = Bitmap.FromStream(str);
+                    complete(results[r]);
+                    result_pan.Visible = false;
+                    error.Visible = false;
+                };
+                panel.Controls.Add(title_search);
+
+                PictureBox pictureBox = new PictureBox();
+                pictureBox.Width = w - 100;
+                pictureBox.Height = h - 15 - title_search.Height - 35;
+                pictureBox.Location = new Point(5, title_search.Height + 10);
+                pictureBox.Size = new Size(205, 124);
+                pictureBox.SizeMode = PictureBoxSizeMode.StretchImage;
+                WebRequest wb = WebRequest.Create(articolo.articles[r].urlToImage);
+                using (var response = wb.GetResponse())
+                {
+                    using (var str = response.GetResponseStream())
+                    {
+                        pictureBox.Image = Bitmap.FromStream(str);
+                    }
                 }
+                panel.Controls.Add(pictureBox);
+
+                System.Windows.Forms.TextBox description_search = new System.Windows.Forms.TextBox();
+                description_search.Text = articolo.articles[r].description;
+                description_search.AutoSize = true;
+                description_search.Font = new Font("Cambria", this.content.Font.Size);
+                description_search.Location = new Point(210, title_search.Height + 10);
+                description_search.Size = new Size(300, 124);
+                description_search.Multiline = true;
+                description_search.Enabled = false;
+                panel.Controls.Add(description_search);
+
+                y += 200;
+                this.result_pan.Controls.Add(panel);
+                panel.BringToFront();
+                this.Refresh();
+
             }
         }
 
@@ -154,13 +214,10 @@ namespace News
             if (results.Count == 0)
             {
                 error.Visible = true;
-                txt_search.Visible = false;
-                img_search.Visible = false;
-                title_search.Visible = false;
             }
             else
             {
-                completeSearch(results[0]);
+                completeSearch(results);
             }
         }
 
@@ -194,7 +251,7 @@ namespace News
                 }
                 else
                 {
-                    completeSearch(results[0]);
+                    completeSearch(results);
                 }
 
             }
@@ -210,6 +267,11 @@ namespace News
             complete(results[0]);
             result_pan.Visible = false;
             error.Visible = false;
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
