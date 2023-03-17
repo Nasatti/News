@@ -178,16 +178,6 @@ namespace News
             previous.Enabled = true;
         }
 
-        private void date_ValueChanged(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void close_Click(object sender, EventArgs e)
         {
             result_pan.Visible = false;
@@ -207,12 +197,6 @@ namespace News
             if (i > (articolo.articles.Count() - 3)) previous.Enabled = false;
             else previous.Enabled = true;
         }
-
-        private void date_DropDown(object sender, EventArgs e)
-        {
-            
-        }
-
         private void date_CloseUp(object sender, EventArgs e)
         {
             error.Visible = false;
@@ -283,22 +267,11 @@ namespace News
 
             }
         }
-
-        private void picture_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void title_search_Click(object sender, EventArgs e)
         {
             complete(results[0]);
             result_pan.Visible = false;
             error.Visible = false;
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-
         }
         private void CleanSearch()
         {
@@ -356,12 +329,6 @@ namespace News
                 completeSearch(results);
             }
         }
-
-        private void txt_ricerca_TextChanged(object sender, EventArgs e)
-        {
-            
-        }
-
         private void txt_ricerca_Click(object sender, EventArgs e)
         {
             txt_ricerca.Text = "";
