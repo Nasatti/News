@@ -21,6 +21,11 @@ namespace News
         public Form1()
         {
             InitializeComponent();
+
+            this.KeyPreview = true;
+            this.KeyDown += new KeyEventHandler(Form1_KeyDown);
+
+            result.DropDownStyle = ComboBoxStyle.DropDown;
         }
 
         static HttpClient client = new HttpClient();
@@ -33,7 +38,9 @@ namespace News
         {
             client = new HttpClient();
             client.DefaultRequestHeaders.Add("User-Agent", "PostmanRuntime/7.31.3");
-            string url = "https://newsapi.org/v2/everything?domains=wsj.com&apiKey=a6412302f797446fb5d0cee1c946e308";
+            var rurl = "https://newsapi.org/v2/everything?domains=wsj.com";
+            var apiKey = "a6412302f797446fb5d0cee1c946e308";
+            var url = $"{rurl}&apiKey={apiKey}";
             
             HttpResponseMessage response = await client.GetAsync(url);
             if (response.IsSuccessStatusCode)
@@ -219,8 +226,11 @@ namespace News
                 data1 = articolo.articles[n].publishedAt.ToString().Substring(0, 10);
                 if (data1 == data2)
                 {
-                    result.Items.Add(articolo.articles[n].title);
-                    results.Add(n);
+                    if (articolo.articles[n].title != null)
+                    {
+                        result.Items.Add(articolo.articles[n].title);
+                        results.Add(n);
+                    }
                 }
             }
             if (results.Count == 0)
@@ -355,6 +365,14 @@ namespace News
         private void txt_ricerca_Click(object sender, EventArgs e)
         {
             txt_ricerca.Text = "";
+        }
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                brn_ricerca.PerformClick();
+            }
         }
     }
 }
