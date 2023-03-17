@@ -26,6 +26,7 @@ namespace News
         static HttpClient client = new HttpClient();
         Rootobject articolo = new Rootobject();
         List<int>results = new List<int>();
+        List<string> auth = new List<string>();   
         int i = 0;
 
         async Task<Rootobject> get()
@@ -38,6 +39,15 @@ namespace News
             if (response.IsSuccessStatusCode)
             {
                 articolo = await JsonSerializer.DeserializeAsync<Rootobject>(await response.Content.ReadAsStreamAsync());
+                for (int i = 0; i < articolo.articles.Count(); i++)
+                {
+                    if (!auth.Contains(articolo.articles[i].author)) auth.Add(articolo.articles[i].author);
+                }
+                auth.Sort();
+                foreach(string a in auth)
+                {
+                    if(a!= null) comboBox_authors.Items.Add(a);
+                }
                 complete(i);
             }
             else
@@ -64,15 +74,6 @@ namespace News
         }
         private void complete(int n)
         {
-            if (this.Controls.ContainsKey("panel_1") && this.Controls["panel_1"].GetType() == typeof(Panel))
-            {
-                foreach (int r in results)
-                {
-                    string panelName = "panel_" + r.ToString();
-                    Panel panel_delete = (Panel)this.Controls[panelName];
-                    panel_delete.Dispose();
-                }
-            }
             title.Text = articolo.articles[n].title;
             description.Text = articolo.articles[n].description;
             content.Text = articolo.articles[n].content;
@@ -87,16 +88,17 @@ namespace News
                     picture.Image = Bitmap.FromStream(str);
                 }
             }
-                result_pan.Visible = false;
+            result_pan.Visible = false;
         }
         private void completeSearch(List<int> results)
         {
             int w = 550; int h = 170;
             int y = 137;
+            int num = 0;
             foreach(int r in results)
             {
                 Panel panel = new Panel();
-                panel.Name = "panel_" + r.ToString();
+                panel.Name = "panel_" + num.ToString();
                 panel.Size = new Size(w, h);
                 panel.Location = new Point(12, y);
                 panel.BorderStyle = BorderStyle.FixedSingle;
@@ -108,11 +110,19 @@ namespace News
                 title_search.AutoSize = true;
                 title_search.Font = new Font("Modern No. 20", this.title.Font.Size);
                 title_search.Location = new Point(5,5);
+                title_search.Cursor = System.Windows.Forms.Cursors.Hand;
                 title_search.Click += (sender, e) =>
                 {
-                    complete(results[r]);
+                    i = r;
+                    complete(r);
                     result_pan.Visible = false;
                     error.Visible = false;
+                    CleanSearch();
+                    if (i != 0) next.Enabled = true;
+                    else next.Enabled = false;
+
+                    if (i > (articolo.articles.Count() - 3)) previous.Enabled = false;
+                    else previous.Enabled = true;
                 };
                 panel.Controls.Add(title_search);
 
@@ -146,7 +156,7 @@ namespace News
                 this.result_pan.Controls.Add(panel);
                 panel.BringToFront();
                 this.Refresh();
-
+                num++;
             }
         }
 
@@ -166,11 +176,6 @@ namespace News
             
         }
 
-        private void url_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            System.Diagnostics.Process.Start(articolo.articles[i].url);
-        }
-
         private void label2_Click(object sender, EventArgs e)
         {
 
@@ -179,6 +184,7 @@ namespace News
         private void close_Click(object sender, EventArgs e)
         {
             result_pan.Visible = false;
+            CleanSearch();
         }
 
         private void result_SelectedIndexChanged(object sender, EventArgs e)
@@ -187,6 +193,12 @@ namespace News
             complete(results[result.SelectedIndex]);
             result_pan.Visible = false;
             error.Visible = false;
+            CleanSearch();
+            if (i != 0) next.Enabled = true;
+            else next.Enabled = false;
+
+            if (i > (articolo.articles.Count() - 3)) previous.Enabled = false;
+            else previous.Enabled = true;
         }
 
         private void date_DropDown(object sender, EventArgs e)
@@ -218,6 +230,11 @@ namespace News
             else
             {
                 completeSearch(results);
+                if (i != 0) next.Enabled = true;
+                else next.Enabled = false;
+
+                if (i > (articolo.articles.Count() - 3)) previous.Enabled = false;
+                else previous.Enabled = true;
             }
         }
 
@@ -272,6 +289,72 @@ namespace News
         private void label1_Click(object sender, EventArgs e)
         {
 
+        }
+        private void CleanSearch()
+        {
+            if (this.result_pan.Controls.ContainsKey("panel_0") && this.result_pan.Controls["panel_0"].GetType() == typeof(Panel))
+            {
+
+                int num = 0;
+                foreach (int r in results)
+                {
+                    string panelName = "panel_" + num.ToString();
+                    Panel panel_delete = (Panel)this.result_pan.Controls[panelName];
+                    panel_delete.Dispose();
+                    num++;
+                }
+            }
+        }
+
+        private void url_LinkClicked_1(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(articolo.articles[i].url);
+        }
+
+        private void comboBox_authors_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            error.Visible = false;
+            result.Items.Clear();
+            results.Clear();
+            result_pan.Visible = true;
+
+            string result1;
+            string result2 = auth[comboBox_authors.SelectedIndex + 1];
+            i = comboBox_authors.SelectedIndex + 1;
+            MessageBox.Show(comboBox_authors.SelectedIndex.ToString() + " - " + result2);
+            for (int n = 0; n < articolo.articles.Length; n++)
+            {
+                result1 = articolo.articles[n].author;
+                if (result1 != null)
+                {
+                    if (result1 == result2)
+                    {
+                        if (articolo.articles[n].title != null)
+                        {
+                            result.Items.Add(articolo.articles[n].title);
+                            results.Add(n);
+                        }
+                    }
+                }
+            }
+            if (results.Count == 0)
+            {
+                error.Visible = true;
+            }
+            else
+            {
+                completeSearch(results);
+            }
+        }
+
+        private void txt_ricerca_TextChanged(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void txt_ricerca_Click(object sender, EventArgs e)
+        {
+            txt_ricerca.Text = "";
         }
     }
 }
