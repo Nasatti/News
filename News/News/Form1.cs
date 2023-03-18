@@ -304,7 +304,6 @@ namespace News
             string result1;
             string result2 = auth[comboBox_authors.SelectedIndex + 1];
             i = comboBox_authors.SelectedIndex + 1;
-            MessageBox.Show(comboBox_authors.SelectedIndex.ToString() + " - " + result2);
             for (int n = 0; n < articolo.articles.Length; n++)
             {
                 result1 = articolo.articles[n].author;

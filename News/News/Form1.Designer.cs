@@ -86,7 +86,6 @@
             this.label1.TabIndex = 1;
             this.label1.Text = "THE WALL STREET JOURNAL";
             this.label1.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // result_pan
             // 
@@ -163,8 +162,6 @@
             this.date.Size = new System.Drawing.Size(168, 20);
             this.date.TabIndex = 3;
             this.date.CloseUp += new System.EventHandler(this.date_CloseUp);
-            this.date.ValueChanged += new System.EventHandler(this.date_ValueChanged);
-            this.date.DropDown += new System.EventHandler(this.date_DropDown);
             // 
             // previous
             // 
@@ -203,7 +200,6 @@
             this.txt_ricerca.TabIndex = 7;
             this.txt_ricerca.Text = "Title";
             this.txt_ricerca.Click += new System.EventHandler(this.txt_ricerca_Click);
-            this.txt_ricerca.TextChanged += new System.EventHandler(this.txt_ricerca_TextChanged);
             // 
             // brn_ricerca
             // 
